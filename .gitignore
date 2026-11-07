@@ -218,3 +218,26 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# FastSpeech 2 training checkpoints and model weights
+*.pth
+*.pth.tar
+*.ckpt
+*.pt
+
+# Large downloaded archives
+*.tar
+*.tar.gz
+*.zip
+
+# Python temporary and cache files
+__pycache__/
+*.py[cod]
+
+# Backup files
+*.backup
+*.bak
+
+# Temporary files
+*.tmp
