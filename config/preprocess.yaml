@@ -1,17 +1,19 @@
-dataset: IndicTTS_Telugu
+# NOTE: This file is for English (Svarah).
+# For Telugu, use config/preprocess_telugu.yaml or Telugu/config.yaml.
+dataset: Svarah_English
 path:
   corpus_path: ''
-  raw_path: /content/drive/MyDrive/tts_assignment/raw/telugu/raw_te
-  preprocessed_path: /content/preprocessed_data/Telugu
-  lexicon_path: ''
-  aligned_path: /content/drive/MyDrive/tts_assignment/processed/telugu/aligned_te
-  manifest_path: /content/drive/MyDrive/tts_assignment/processed/telugu/manifest_clean.csv
+  raw_path: /content/drive/MyDrive/tts_assignment/raw/english/raw_en
+  preprocessed_path: /content/preprocessed_data/English
+  lexicon_path: /content/drive/MyDrive/tts_assignment/processed/english/en_merged.dict
+  aligned_path: /content/drive/MyDrive/tts_assignment/processed/english/aligned_en
+  manifest_path: /content/drive/MyDrive/tts_assignment/processed/english/manifest_clean.csv
 preprocessing:
   val_size: 512
   text:
     text_cleaners:
     - basic_cleaners
-    language: te
+    language: en
   audio:
     sampling_rate: 22050
     max_wav_value: 32768.0

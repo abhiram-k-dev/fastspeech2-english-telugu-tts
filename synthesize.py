@@ -14,6 +14,34 @@ from utils.tools import to_device, synth_samples
 from dataset import TextDataset
 from text import text_to_sequence
 
+
+def preprocess_telugu(text, preprocess_config):
+    """Convert a raw Telugu string into a symbol-ID sequence for inference.
+
+    Uses grapheme-level representation: each Unicode Telugu character is mapped
+    directly to a symbol ID using the telugu_symbols.json vocabulary.
+    Text normalisation converts digits, times and ordinals into Telugu words.
+    """
+    import json
+    import os
+    import sys
+    # Allow importing tts_helpers from the repo root.
+    _repo_root = os.path.dirname(os.path.abspath(__file__))
+    if _repo_root not in sys.path:
+        sys.path.insert(0, _repo_root)
+    import tts_helpers as h
+
+    sym_path = os.path.join(_repo_root, "text", "telugu_symbols.json")
+    symbols = set(json.load(open(sym_path, encoding="utf-8")))
+    ph = h.te_phonemes(text, symbols)
+    print(f"Raw Text Sequence: {text}")
+    print(f"Normalised: {h.normalize_te(text)}")
+    print(f"Grapheme Sequence: {ph}")
+    sequence = np.array(
+        text_to_sequence(ph, preprocess_config["preprocessing"]["text"]["text_cleaners"])
+    )
+    return sequence
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -202,10 +230,15 @@ if __name__ == "__main__":
     if args.mode == "single":
         ids = raw_texts = [args.text[:100]]
         speakers = np.array([args.speaker_id])
-        if preprocess_config["preprocessing"]["text"]["language"] == "en":
+        lang = preprocess_config["preprocessing"]["text"]["language"]
+        if lang == "en":
             texts = np.array([preprocess_english(args.text, preprocess_config)])
-        elif preprocess_config["preprocessing"]["text"]["language"] == "zh":
+        elif lang == "zh":
             texts = np.array([preprocess_mandarin(args.text, preprocess_config)])
+        elif lang == "te":
+            texts = np.array([preprocess_telugu(args.text, preprocess_config)])
+        else:
+            raise ValueError(f"Unsupported language: {lang!r}. Expected 'en', 'zh', or 'te'.")
         text_lens = np.array([len(texts[0])])
         batchs = [(ids, raw_texts, speakers, texts, text_lens, max(text_lens))]
 
